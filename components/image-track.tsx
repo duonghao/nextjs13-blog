@@ -15,12 +15,18 @@ export default function ImageTrack() {
   const ref = useRef<HTMLDivElement>(null);
 
   const duringDrag = useCallback(
-    (event: MouseEvent) => {
+    (event: MouseEvent | TouchEvent) => {
       if (x === 0) return;
 
-      const mouseDelta = x - event.clientX;
+      var delta;
+      if (event instanceof MouseEvent) {
+        delta = x - event.clientX;
+      } else if (event instanceof TouchEvent) {
+        delta = x - event.touches[0].clientX;
+      }
+
       const maxDelta = window.innerWidth / 2;
-      const percentage = (mouseDelta / maxDelta) * -100,
+      const percentage = ((delta as number) / maxDelta) * -100,
         nextPercentage = xTranslationPercentage + percentage;
       const currentPercentage = Math.max(Math.min(nextPercentage, 0), -100);
       if (ref.current != null) {
@@ -39,21 +45,35 @@ export default function ImageTrack() {
   );
 
   useEffect(() => {
-    const startDrag = (event: MouseEvent) => {
-      setX(event.clientX);
+    const startDrag = (event: MouseEvent | TouchEvent) => {
+      if (event instanceof MouseEvent) {
+        setX(event.clientX);
+      } else if (event instanceof TouchEvent) {
+        setX(event.touches[0].clientX);
+      }
     };
-    const endDrag = (event: MouseEvent) => {
+    const endDrag = (event: MouseEvent | TouchEvent) => {
       setX(0);
     };
 
+    // Handle mouse events
     window.addEventListener('mousedown', startDrag);
     window.addEventListener('mouseup', endDrag);
     window.addEventListener('mousemove', duringDrag);
+
+    // Handle touch events
+    window.addEventListener('touchstart', startDrag);
+    window.addEventListener('touchend', endDrag);
+    window.addEventListener('touchmove', duringDrag);
 
     return () => {
       window.removeEventListener('mousedown', startDrag);
       window.removeEventListener('mouseup', endDrag);
       window.removeEventListener('mousemove', duringDrag);
+
+      window.removeEventListener('touchstart', startDrag);
+      window.removeEventListener('touchend', endDrag);
+      window.removeEventListener('touchmove', duringDrag);
     };
   }, [duringDrag]);
 
