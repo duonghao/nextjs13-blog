@@ -30,7 +30,7 @@ export default function ImageTrack() {
         nextPercentage = xTranslationPercentage + percentage;
       const currentPercentage = Math.max(Math.min(nextPercentage, 0), -100);
       if (ref.current != null) {
-        ref.current.style.transform = `translate(${currentPercentage}%, -50%)`;
+        ref.current.style.transform = `translate(${currentPercentage}%, -70%)`;
 
         const images = Array.from(ref.current.children).map(
           (imageContainer) => imageContainer.children[0] as HTMLElement
@@ -41,7 +41,7 @@ export default function ImageTrack() {
       }
       setXTranslationPercentage(currentPercentage);
     },
-    [x]
+    [x, xTranslationPercentage]
   );
 
   useEffect(() => {
@@ -81,7 +81,7 @@ export default function ImageTrack() {
     <section className="w-full h-full relative">
       <div
         ref={ref}
-        className={`flex flex-nowrap gap-4 absolute left-1/2 top-1/2 -translate-y-1/2`}
+        className={`flex flex-nowrap gap-4 absolute left-1/2 top-[70%] -translate-y-[70%]`}
       >
         <div className="trackImage relative">
           <Image
@@ -90,7 +90,6 @@ export default function ImageTrack() {
             className="object-cover"
             draggable={false}
             fill={true}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           ></Image>
         </div>
         <div className="trackImage relative">
@@ -100,7 +99,6 @@ export default function ImageTrack() {
             className="object-cover"
             draggable={false}
             fill={true}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           ></Image>
         </div>
         <div className="trackImage relative">
@@ -110,7 +108,6 @@ export default function ImageTrack() {
             className="object-cover"
             draggable={false}
             fill={true}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           ></Image>
         </div>
         <div className="trackImage relative">
@@ -120,7 +117,6 @@ export default function ImageTrack() {
             className="object-cover"
             draggable={false}
             fill={true}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           ></Image>
         </div>
         <div className="trackImage relative">
@@ -130,7 +126,6 @@ export default function ImageTrack() {
             className="object-cover"
             draggable={false}
             fill={true}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           ></Image>
         </div>
         <div className="trackImage relative">
@@ -140,7 +135,6 @@ export default function ImageTrack() {
             className="object-cover"
             draggable={false}
             fill={true}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           ></Image>
         </div>
       </div>
