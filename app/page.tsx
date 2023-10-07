@@ -3,7 +3,7 @@ import ImageTrack from '@/components/image-track';
 
 export default function Home() {
   return (
-    <main className="h-screen w-screen bg-black overflow-hidden">
+    <main className="h-full w-full bg-black">
       <Header />
       <ImageTrack />
     </main>

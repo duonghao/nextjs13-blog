@@ -3,5 +3,5 @@
 @tailwind utilities;
 
 .trackImage {
-  @apply h-[80vh] aspect-[3/4] sm:min-w-[40vmin] sm:min-h-[56vmin];
+  @apply aspect-[3/4] h-[80vh] sm:min-w-[40vmin] sm:min-h-[56vmin];
 }

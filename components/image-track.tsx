@@ -78,10 +78,10 @@ export default function ImageTrack() {
   }, [duringDrag]);
 
   return (
-    <section className="w-full h-full relative">
+    <section className="w-full h-full relative overflow-hidden">
       <div
         ref={ref}
-        className={`flex flex-nowrap gap-4 absolute left-1/2 top-[70%] -translate-y-[70%]`}
+        className={`flex flex-nowrap gap-4 absolute sm:left-1/2 top-[70%] -translate-y-[70%] px-4`}
       >
         <div className="trackImage relative">
           <Image
