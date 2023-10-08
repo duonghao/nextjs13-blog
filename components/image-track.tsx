@@ -8,11 +8,16 @@ import Image3 from '@/public/Image_3.jpg';
 import Image4 from '@/public/Image_4.jpg';
 import Image5 from '@/public/Image_5.jpg';
 import Image6 from '@/public/Image_6.jpg';
+import { useMediaQuery } from '@uidotdev/usehooks';
 
 export default function ImageTrack() {
   const [x, setX] = useState(0);
-  const [xTranslationPercentage, setXTranslationPercentage] = useState(0);
+  const [xTranslationPercentageTemp, setXTranslationPercentageTemp] =
+    useState(0);
+  const [xTranslationPercentageActual, setXTranslationPercentageActual] =
+    useState(0);
   const ref = useRef<HTMLDivElement>(null);
+  const isLargeDevice = useMediaQuery('only screen and (min-width : 1024px)');
 
   const duringDrag = useCallback(
     (event: MouseEvent | TouchEvent) => {
@@ -27,21 +32,35 @@ export default function ImageTrack() {
 
       const maxDelta = window.innerWidth / 2;
       const percentage = ((delta as number) / maxDelta) * -100,
-        nextPercentage = xTranslationPercentage + percentage;
+        nextPercentage = xTranslationPercentageActual + percentage;
       const currentPercentage = Math.max(Math.min(nextPercentage, 0), -100);
       if (ref.current != null) {
-        ref.current.style.transform = `translate(${currentPercentage}%, -70%)`;
+        ref.current.animate(
+          { transform: `translate(${currentPercentage}%, 0%)` },
+          { duration: 200, fill: 'forwards' }
+        );
 
         const images = Array.from(ref.current.children).map(
           (imageContainer) => imageContainer.children[0] as HTMLElement
         );
         for (const image of images) {
-          image.style.objectPosition = `${currentPercentage + 100}% 50%`;
+          image.animate(
+            { objectPosition: `${100 + currentPercentage}% 50%` },
+            { duration: 200, fill: 'forwards' }
+          );
         }
       }
-      setXTranslationPercentage(currentPercentage);
+      setXTranslationPercentageTemp(currentPercentage);
     },
-    [x, xTranslationPercentage]
+    [x, xTranslationPercentageActual]
+  );
+
+  const endDrag = useCallback(
+    (event: MouseEvent | TouchEvent) => {
+      setX(0);
+      setXTranslationPercentageActual(xTranslationPercentageTemp);
+    },
+    [xTranslationPercentageTemp]
   );
 
   useEffect(() => {
@@ -52,19 +71,18 @@ export default function ImageTrack() {
         setX(event.touches[0].clientX);
       }
     };
-    const endDrag = (event: MouseEvent | TouchEvent) => {
-      setX(0);
-    };
 
-    // Handle mouse events
-    window.addEventListener('mousedown', startDrag);
-    window.addEventListener('mouseup', endDrag);
-    window.addEventListener('mousemove', duringDrag);
+    if (isLargeDevice) {
+      // Handle mouse events
+      window.addEventListener('mousedown', startDrag);
+      window.addEventListener('mouseup', endDrag);
+      window.addEventListener('mousemove', duringDrag);
 
-    // Handle touch events
-    window.addEventListener('touchstart', startDrag);
-    window.addEventListener('touchend', endDrag);
-    window.addEventListener('touchmove', duringDrag);
+      // Handle touch events
+      window.addEventListener('touchstart', startDrag);
+      window.addEventListener('touchend', endDrag);
+      window.addEventListener('touchmove', duringDrag);
+    }
 
     return () => {
       window.removeEventListener('mousedown', startDrag);
@@ -75,13 +93,13 @@ export default function ImageTrack() {
       window.removeEventListener('touchend', endDrag);
       window.removeEventListener('touchmove', duringDrag);
     };
-  }, [duringDrag]);
+  }, [duringDrag, isLargeDevice, endDrag]);
 
   return (
-    <section className="w-full h-full relative overflow-hidden">
+    <section className="w-full lg:h-full lg:relative lg:overflow-hidden">
       <div
         ref={ref}
-        className={`flex flex-nowrap gap-4 absolute sm:left-1/2 top-[70%] -translate-y-[70%] px-4`}
+        className={`flex flex-col gap-4 lg:absolute lg:left-1/2 lg:flex-row lg:flex-nowrap lg:h-full lg:items-center `}
       >
         <div className="trackImage relative">
           <Image
