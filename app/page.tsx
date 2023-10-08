@@ -1,5 +1,8 @@
 import Header from '@/components/header';
-import ImageTrack from '@/components/image-track';
+import dynamic from 'next/dynamic';
+const ImageTrack = dynamic(() => import('../components/image-track'), {
+  ssr: false,
+});
 
 export default function Home() {
   return (
